@@ -8,7 +8,7 @@ class CheckIp
 {
     public function handle($request, Closure $next)
     {
-        $ip = $request->getClientIp();
+        $ip = $request->ip();
         $allowed = AllowedIp::where('ip', $ip)->exists();
 
         if (!$allowed) {
