@@ -5,9 +5,10 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libzip-dev \
-    zip
+    zip \
+    default-mysql-client
 
-RUN docker-php-ext-install zip
+RUN docker-php-ext-install zip pdo pdo_mysql
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -19,4 +20,4 @@ RUN composer install --no-dev --optimize-autoloader
 
 EXPOSE 10000
 
-CMD php artisan serve --host=0.0.0.0 --port=10000
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=10000
