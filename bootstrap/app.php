@@ -10,16 +10,18 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        //
-    })
+
     ->withMiddleware(function (Middleware $middleware): void {
 
+        // Trust Render / proxy IP headers
+        $middleware->trustProxies(at: '*');
+
+        // Middleware aliases
         $middleware->alias([
             'check.ip' => \App\Http\Middleware\CheckIp::class,
         ]);
-
     })
+
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
