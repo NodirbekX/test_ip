@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -8,11 +9,16 @@ class CheckIp
 {
     public function handle($request, Closure $next)
     {
-        return response()->json([
-            'ip' => $request->ip(),
-            'clientIp' => $request->getClientIp(),
-            'x-forwarded-for' => $request->header('x-forwarded-for'),
-            'remote_addr' => $_SERVER['REMOTE_ADDR'] ?? null,
-        ]);
+        $forwarded = $request->header('x-forwarded-for');
+
+        $ip = trim(explode(',', $forwarded)[0]);
+
+        $allowed = AllowedIp::where('ip', $ip)->exists();
+
+        if (!$allowed) {
+            return response("🚫 Sizga ruxsat berilmagan. IP: ".$ip, 403);
+        }
+
+        return $next($request);
     }
 }
