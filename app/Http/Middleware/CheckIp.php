@@ -16,7 +16,7 @@ class CheckIp
         $allowed = AllowedIp::where('ip', $ip)->exists();
 
         if (!$allowed) {
-            return response("🚫 Sizga ruxsat berilmagan. IP: ".$ip, 403);
+            return response("🚫 Sizga ruxsat berilmagan. IP: ", 403);
         }
 
         return $next($request);
